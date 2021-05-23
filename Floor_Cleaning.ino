@@ -1,5 +1,5 @@
 #include <Servo.h>
- //FloorCleaner 2.0
+ //FloorCleaner 2.2
 //Kent Bacatan 2021
 typedef struct {
   int lDist;
