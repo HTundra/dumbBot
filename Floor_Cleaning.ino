@@ -78,7 +78,7 @@ void loop() {
     } else if (((biDist.rDist) < max && (biDist.lDist) < max) || biDist.lDist == biDist.rDist || biDist.lDist == biDist.rDist + 1 || biDist.lDist == biDist.rDist - 1) {
       bWard = 0;
       biDist = reverseAndScan();
-      if (biDist.lDist > longRange & biDist.rDist > longRange) {
+      if (biDist.lDist > longRange && biDist.rDist > longRange) {
         moveBackandForth(100, 1);
       } else {
         moveBackandForth(biDist.lDist, biDist.rDist);
