@@ -1,8 +1,6 @@
 #include <Servo.h>
  //FloorCleaner 2.0
 //Kent Bacatan 2021
-//Some weird Vietnamese guy made this but I fixed it for my brother
-// int pos = 0;    // variable to store the servo position. Useless
 typedef struct {
   int lDist;
   int rDist;
@@ -21,9 +19,10 @@ int fCount = 0; //counts the number of cycles that have been completed
 int bWard = 0;
 int serialBaudRate = 9600;
 //int dongcoservo = 9; commented because declared but never referenced
-         
+
 int measureDist(); //measures distance using sensor
 posData lookAround();
+posData reverseAndScan();
 void moveForward();
 void rotateRight(int time); //move right
 void rotateLeft(int time); //move left
@@ -70,33 +69,21 @@ void loop() {
   if (fCount > 150 || dist < max) {
     stopMovement(); //Stops movement
     biDist = lookAround();
-    Serial.print("ldist");
-    Serial.println(biDist.lDist);
-    Serial.print("rdist");
-    Serial.println(biDist.rDist);
     fCount = 0;
     bWard++;
-    Serial.print("bward value");
-    Serial.println(bWard);
-    if(bWard > 3){
+    if (bWard > 3) {
       bWard = 0;
-      moveBackward();
-      delay(1000);
-      stopMovement();
-      biDist = lookAround();
+      biDist = reverseAndScan();
       moveBackandForth(100, 1);
-    }else if (((biDist.rDist) < max  && (biDist.lDist) < max) || biDist.lDist == biDist.rDist || biDist.lDist == biDist.rDist + 1 || biDist.lDist == biDist.rDist - 1) {
+    } else if (((biDist.rDist) < max && (biDist.lDist) < max) || biDist.lDist == biDist.rDist || biDist.lDist == biDist.rDist + 1 || biDist.lDist == biDist.rDist - 1) {
       bWard = 0;
-      moveBackward();
-      delay(1000);
-      stopMovement();
-      biDist = lookAround();
-      if(biDist.lDist > longRange & biDist.rDist > longRange){
+      biDist = reverseAndScan();
+      if (biDist.lDist > longRange & biDist.rDist > longRange) {
         moveBackandForth(100, 1);
-      }else{
-          moveBackandForth(biDist.lDist, biDist.rDist);
+      } else {
+        moveBackandForth(biDist.lDist, biDist.rDist);
       }
-    }else if ((biDist.lDist) < max || (biDist.rDist) < max) { //if distance of left and right are less than 30
+    } else if ((biDist.lDist) < max || (biDist.rDist) < max) { //if distance of left and right are less than 30
       moveBackandForth(biDist.lDist, biDist.rDist); //move back and forth
     }
 
@@ -115,13 +102,13 @@ void resetServo() {
   myservo.write(90);
 }
 
-void startupSubroutine(){
-posData startupDist;
-moveBackward();
-delay(1000);
-stopMovement();
-startupDist = lookAround();
-moveBackandForth(startupDist.lDist, startupDist.rDist);
+void startupSubroutine() {
+  posData startupDist;
+  moveBackward();
+  delay(1000);
+  stopMovement();
+  startupDist = lookAround();
+  moveBackandForth(startupDist.lDist, startupDist.rDist);
 }
 
 posData lookAround() {
@@ -132,11 +119,11 @@ posData lookAround() {
   return A;
 }
 
-posData reverseAndScan(){
+posData reverseAndScan() {
   posData A;
   moveBackward();
   delay(1000);
-  stopMovement();  
+  stopMovement();
   A = lookAround();
   return A;
 }
@@ -149,7 +136,7 @@ void moveBackandForth(int lDist, int rDist) //I redid this function lmao maybe i
   stopMovement();
   if (lDist > rDist) {
     rotateLeft(delayTime);
-  }else if (rDist > lDist) {
+  } else if (rDist > lDist) {
     rotateRight(delayTime);
   }
   stopMovement();
@@ -164,7 +151,6 @@ int measureDist() {
   digitalWrite(trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(trig, LOW);
-  //Đo độ rộng xung HIGH ở chân echo. <--one of the original comments he left
   time = pulseIn(echo, HIGH); // Measures the time it takes from the sensor to return a HIGH value
   // ret = time / 2 / 29.412;
   ret = microsecondsToInches(time);
