@@ -1,5 +1,5 @@
 #include <Servo.h>
- //FloorCleaner 1.9
+ //FloorCleaner 2.0
 //Kent Bacatan 2021
 //Some weird Vietnamese guy made this but I fixed it for my brother
 // int pos = 0;    // variable to store the servo position. Useless
@@ -109,7 +109,6 @@ void loop() {
     //      }
     //    }
   }
-
 }
 
 void resetServo() {
@@ -130,6 +129,15 @@ posData lookAround() {
   posData A;
   A.lDist = servoLeft(); //rotates the servo to the left
   A.rDist = servoRight(); //rotates the servo to the right
+  return A;
+}
+
+posData reverseAndScan(){
+  posData A;
+  moveBackward();
+  delay(1000);
+  stopMovement();  
+  A = lookAround();
   return A;
 }
 
