@@ -6,8 +6,7 @@ typedef struct {
   int rDist;
 }posData;
 Servo myservo; // create servo object to control a servo
-
-const int trig = 6; //trig pin in ultrasonic sensor
+const int trig = 6; //trig pin in servo
 const int echo = 5; //echo pin in ultrasonic sensor
 const int redL = 10; //input A of motor
 const int redR = 11; //input C of motor
@@ -52,7 +51,6 @@ void setup() {
   digitalWrite(blackR, LOW);
   //turns servo 90 degrees
   startupSubroutine();
-  myservo.write(90);
   Serial.print("I'm awake!");
   delay(500);
 }
@@ -104,8 +102,7 @@ void resetServo() {
 
 void startupSubroutine() {
   posData startupDist;
-  moveBackward();
-  delay(1000);
+  resetServo();
   stopMovement();
   startupDist = lookAround();
   moveBackandForth(startupDist.lDist, startupDist.rDist);
